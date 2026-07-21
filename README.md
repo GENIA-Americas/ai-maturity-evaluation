@@ -21,12 +21,19 @@ Docs at http://127.0.0.1:8000/docs
 ```bash
 pytest tests/ -v
 ```
-6/6 tests pass as of last verified run.
+10/10 tests pass as of last verified run.
+
+## Auth
+All endpoints require an `X-API-Key` header. Keys are configured via the `API_KEYS`
+env var as `key1:org_one,key2:org_two` — each key authenticates its caller as exactly
+one org, and reads/writes are scoped to that org.
 
 ## API
 - `POST /evaluations` — submit a maturity questionnaire, get category scores + tier
-  (`Initial` / `Developing` / `Managed` / `Optimizing`).
-- `GET /evaluations/{id}` — retrieve one evaluation.
-- `GET /organizations/{org_name}/trend` — all evaluations for an org, ordered by time,
-  with `delta_from_previous` computed between consecutive entries.
+  (`Initial` / `Developing` / `Managed` / `Optimizing`). Org name is derived from your
+  API key, not sent in the request body.
+- `GET /evaluations/{id}` — retrieve one evaluation belonging to your org.
+- `GET /organizations/trend` — all evaluations for *your* org (the one your API key
+  belongs to), ordered by time, with `delta_from_previous` computed between consecutive
+  entries. Takes no org parameter — there is no way to request another org's trend.
 - `GET /health`
